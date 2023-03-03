@@ -51,6 +51,13 @@ const setSenha = (num: number) => {
       payload: { senha: Number(num) },
     });
     senhaInput.value = "";
+  } else {
+    channel.send({
+      type: "broadcast",
+      event: "senhaCenac",
+      payload: { senha: 0 },
+    });
+    senhaInput.value = "";
   }
 };
 
