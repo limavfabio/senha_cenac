@@ -3,7 +3,7 @@
     <h3>Senha atual: {{ senhaAtual }}</h3>
     <button @click="incrementSenha()">Incrementar Senha</button>
     <div class="senhaSetter">
-      <input v-model="senhaInput" type="text" />
+      <input placeholder="0" v-model="senhaInput" type="number" />
       <button @click="setSenha(senhaInput)">Setar Senha</button>
     </div>
     <button @click="resetSenha()" class="outline secondary">
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import config from "nitropack/dist/runtime/config";
+import { z } from "zod";
 
 const supabase = useSupabaseClient();
 const senhaAtual = ref(0);
@@ -44,12 +44,14 @@ const incrementSenha = () => {
 };
 
 const setSenha = (num: number) => {
-  channel.send({
-    type: "broadcast",
-    event: "senhaCenac",
-    payload: { senha: num },
-  });
-  senhaInput.value = "";
+  if (z.number().safeParse(Number(num)).success) {
+    channel.send({
+      type: "broadcast",
+      event: "senhaCenac",
+      payload: { senha: Number(num) },
+    });
+    senhaInput.value = "";
+  }
 };
 
 const resetSenha = () => {
