@@ -4,9 +4,11 @@ specifiers:
   '@nuxtjs/supabase': ^0.3.1
   '@picocss/pico': ^1.5.7
   nuxt: ^3.2.2
+  zod: ^3.20.6
 
 dependencies:
   '@picocss/pico': 1.5.7
+  zod: 3.20.6
 
 devDependencies:
   '@nuxtjs/supabase': 0.3.1
@@ -5038,3 +5040,7 @@ packages:
       compress-commons: 4.1.1
       readable-stream: 3.6.0
     dev: true
+
+  /zod/3.20.6:
+    resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
+    dev: false
