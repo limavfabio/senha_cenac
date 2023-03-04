@@ -15,58 +15,43 @@
 <script setup lang="ts">
 import { z } from "zod";
 
-const supabase = useSupabaseClient();
 const senhaAtual = ref(0);
-const senhaInput = ref();
 
-const channel = supabase.channel("senhaAtual", {
-  config: {
-    broadcast: {
-      self: true,
-    },
-  },
-});
+// Supabase connection
 
-channel
-  .on(
-    "broadcast",
-    { event: "senhaCenac" },
-    (payload) => (senhaAtual.value = payload.payload.senha)
-  )
-  .subscribe();
+const supabase = useSupabaseClient();
+const channel = supabase.channel("senhaAtual").subscribe();
 
-const incrementSenha = () => {
+watch(senhaAtual, () => {
   channel.send({
     type: "broadcast",
     event: "senhaCenac",
-    payload: { senha: (senhaAtual.value += 1) },
+    payload: { senha: senhaAtual.value },
   });
+});
+// Functions
+
+const incrementSenha = () => {
+  senhaAtual.value += 1;
 };
 
+const senhaInput = ref();
+
 const setSenha = (num: number) => {
+  // Parse input value for valid number
   if (z.number().safeParse(Number(num)).success) {
-    channel.send({
-      type: "broadcast",
-      event: "senhaCenac",
-      payload: { senha: Number(num) },
-    });
+    senhaAtual.value = Number(num);
     senhaInput.value = "";
+
+    // If not valid number, reset senhaAtual
   } else {
-    channel.send({
-      type: "broadcast",
-      event: "senhaCenac",
-      payload: { senha: 0 },
-    });
+    senhaAtual.value = 0;
     senhaInput.value = "";
   }
 };
 
 const resetSenha = () => {
-  channel.send({
-    type: "broadcast",
-    event: "senhaCenac",
-    payload: { senha: (senhaAtual.value = 0) },
-  });
+  senhaAtual.value = 0;
 };
 </script>
 
