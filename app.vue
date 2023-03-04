@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import "@picocss/pico";
+import "./assets/picocss-theme.scss";
 </script>
 
 <style scoped>
