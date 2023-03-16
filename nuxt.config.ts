@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     // PWA options
     registerType: "autoUpdate",
     devOptions: {
-      enabled: true,
+      enabled: false,
     },
   },
   typescript: {
