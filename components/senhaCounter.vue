@@ -7,15 +7,21 @@
 
 <script setup lang="ts">
 const supabase = useSupabaseClient();
-const channel = supabase.channel("senhaAtual");
+const channel = supabase.channel("senhaAtual").subscribe();
 
 const senhaAtual = ref(0);
 
-channel
-  .on(
-    "broadcast",
-    { event: "senhaCenac" },
-    (payload) => (senhaAtual.value = payload.payload.senha)
-  )
-  .subscribe();
+// Listen for messages
+channel.on(
+  "broadcast",
+  { event: "senhaCenac" },
+  (payload) => (senhaAtual.value = payload.payload.senha)
+);
+
+// Send senhaAtual request on join
+channel.send({
+  type: "broadcast",
+  event: "join",
+  payload: { join: "I'm Joining!" },
+});
 </script>

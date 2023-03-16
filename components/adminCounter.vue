@@ -18,10 +18,19 @@ import { z } from "zod";
 const senhaAtual = ref(0);
 
 // Supabase connection
-
 const supabase = useSupabaseClient();
 const channel = supabase.channel("senhaAtual").subscribe();
 
+// Start listening for requests, then resending messages on join detected
+channel.on("broadcast", { event: "join" }, () =>
+  channel.send({
+    type: "broadcast",
+    event: "senhaCenac",
+    payload: { senha: senhaAtual.value },
+  })
+);
+
+// Send messages when senhaAtual changes
 watch(senhaAtual, () => {
   channel.send({
     type: "broadcast",
