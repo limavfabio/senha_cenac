@@ -16,6 +16,7 @@
 import { z } from "zod";
 
 const senhaAtual = ref(0);
+const shouldRun = ref(true);
 
 // Supabase connection
 const supabase = useSupabaseClient();
@@ -32,12 +33,25 @@ channel.on("broadcast", { event: "join" }, () =>
 
 // Send messages when senhaAtual changes
 watch(senhaAtual, () => {
-  channel.send({
-    type: "broadcast",
-    event: "senhaCenac",
-    payload: { senha: senhaAtual.value },
-  });
+  if (shouldRun.value) {
+    channel.send({
+      type: "broadcast",
+      event: "senhaCenac",
+      payload: { senha: senhaAtual.value },
+    });
+  } else {
+    // Immediately sets to true as to only avoid block once
+    shouldRun.value = true;
+  }
 });
+
+// Listen for messages
+channel.on("broadcast", { event: "senhaCenac" }, (payload) => {
+  // This will mutate senhaAtual without running the effect
+  shouldRun.value = false;
+  senhaAtual.value = payload.payload.senha;
+});
+
 // Functions
 
 const incrementSenha = () => {
